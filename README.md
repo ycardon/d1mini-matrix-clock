@@ -4,8 +4,8 @@ A clock, using a matrix led shield on a ESP8266 D1 mini.
 
 ## usage
 
-On first boot, you must set your wifi credentials by connecting to the
-'d1mini-clock' captive network.
+On first boot, you must connect to the 'd1mini-clock' captive network and
+set your local wifi credentials.
 
 ## features
 
