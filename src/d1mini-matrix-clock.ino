@@ -7,6 +7,8 @@
 #include <WiFiManager.h>
 
 #include <NTPClient.h>
+#include <Time.h>
+#include <Timezone.h>
 #include <WEMOS_Matrix_LED.h>
 
 #include <ESP8266mDNS.h>       // RemoteDebug dependency
@@ -15,8 +17,6 @@
 #include <ESP8266WebServer.h>  // WiFiManager dependency
 
 #define HOST_NAME "d1mini-clock"
-
-#define TIME_OFFSET 2          // must be 1 in winter (living in Paris)
 
 // --- LIBRARIES INIT ---
 WiFiManager   wifiManager;
@@ -60,6 +60,10 @@ void logoMatrix() {
   }
 }
 
+// --- TIMEZONE ---
+TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120}; // Central European Summer Time
+TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};   // Central European Time
+Timezone CE_TZ(CEST, CET);
 
 // --- SETUP ---
 void setup() {
@@ -79,6 +83,7 @@ void setup() {
 
   // time synchronization
   timeClient.begin();
+  timeClient.setUpdateInterval(60*60*1000);
 
   // over the air update
   ArduinoOTA.setHostname(HOST_NAME);
@@ -94,10 +99,12 @@ void loop() {
   ArduinoOTA.handle();
   debug.handle();
 
-  // update ntp and get time
+  // update time via ntp and apply timezone adjustment
   timeClient.update();
-  int curMin = timeClient.getMinutes();
-  int curHour = timeClient.getHours() + TIME_OFFSET;
+  setTime(timeClient.getEpochTime());
+  time_t localTime = CE_TZ.toLocal(now());
+  int curMin = minute(localTime);
+  int curHour = hour(localTime);
 
   // adjust brightness
   if ( (curHour > 20 ) || (curHour < 6) ) {
