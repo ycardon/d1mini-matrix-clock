@@ -1,5 +1,5 @@
 /*
-  D1 mini + matrix shield = clock
+  D1 mini + matrix shield = internet clock
 */
 #include <ESP8266WiFi.h>
 #include <RemoteDebug.h>
@@ -19,6 +19,7 @@
 #define HOST_NAME "d1mini-clock"
 
 // --- LIBRARIES INIT ---
+
 WiFiManager   wifiManager;
 RemoteDebug   debug;
 WiFiUDP       ntpUDP;
@@ -43,11 +44,9 @@ int font[][3] = {
 
 // write 4 digits to the led matrix
 void writeMatrix(int a1, int a0, int b1, int b0) {
-
   for (int i=0; i<3; i++) {
     mled.disBuffer[i+1] = font[a1][i] * 0x10 + font[a0][i];
   }
-
   for (int i=0; i<3; i++) {
     mled.disBuffer[i+5] = font[b1][i] * 0x10 + font[b0][i];
   }
@@ -60,12 +59,14 @@ void logoMatrix() {
   }
 }
 
-// --- TIMEZONE ---
+// --- TIMEZONE DEFINITION ---
+
 TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120}; // Central European Summer Time
 TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};   // Central European Time
 Timezone CE_TZ(CEST, CET);
 
 // --- SETUP ---
+
 void setup() {
 
   // print a "logo" to the matrix led
@@ -91,6 +92,7 @@ void setup() {
 }
 
 // --- MAIN LOOP ---
+
 bool blink = false;
 
 void loop() {
