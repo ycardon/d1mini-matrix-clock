@@ -4,3 +4,4 @@
 .gcc-flags.json
 lib/readme.txt
 .travis.yml
+.vscode
