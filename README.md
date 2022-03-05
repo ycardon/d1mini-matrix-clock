@@ -2,6 +2,8 @@
 
 A clock, using a matrix led shield on a ESP8266 D1 mini.
 
+![assembled clock picture](doc/d1mini-matrix-clock.png)
+
 ## usage
 
 On first boot, you must connect to the 'd1mini-clock' captive network and
